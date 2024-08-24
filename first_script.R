@@ -35,3 +35,5 @@ class(PL)
 is.vector(PL)
 
 hist(PL)
+
+my_hist <- hist(PL)
