@@ -1,10 +1,10 @@
 ---
 title: "R Object, Workflow and Functions"
-format: html
+format: pdf
 editor: visual
 ---
 
-#Vectors
+# Vectors
 
 Create a vector
 
@@ -13,7 +13,6 @@ set.seed(42)
 my_unif <- runif(30)
 is.vector(my_unif)
 ```
-
 
 Subset that object
 
@@ -27,7 +26,6 @@ Sort the vector
 ```{r}
 sort(my_unif)
 ```
-
 
 Create vector with strings
 
@@ -43,19 +41,22 @@ data(trees)
 trees
 str(trees)
 ```
+
 Subset a column
+
 ```{r}
 trees$Height
 ```
 
 Get attributes from dataframe
+
 ```{r}
 attributes(trees)
 names(trees)
 colnames(trees)[2:3]
 ```
 
-#Lists
+# Lists
 
 Investigating data frame
 
@@ -71,6 +72,7 @@ trees[[2]]
 ```
 
 Look at linear model fit
+
 ```{r}
 fit <- lm(Volume ~ Height + Girth, data = trees)
 str(fit, max.level = 1)
@@ -84,5 +86,85 @@ coef(fit)
 fit$residuals
 residuals(fit)
 fit$rank
+```
+
+# if/then/else
+
+if divisible by 3 return fizz
+if divisible by 5 return buzz
+if divisible by 15 return fizzbuzz
+
+```{r}
+number <- 2
+if(number %% 15 == 0) {
+  print("fizzbuzz")
+} else if (!(number %% 5)) {
+  print("buzz")
+} else if (!(number %% 3)) {
+  print("fizz")
+} else {
+  print("whoops")
+}
+```
+
+# Loops
+Wrap fizz buzz code loop
+
+```{r}
+for(number in -1:41) {
+  if(number %% 15 == 0) {
+    print("fizzbuzz")
+  } else if (!(number %% 5)) {
+    print("buzz")
+  } else if (!(number %% 3)) {
+    print("fizz")
+  } else {
+    print("whoops")
+  }
+}
+```
+
+Normal approximation of binomial
+
+```{r}
+n <- 40
+prob <- 0.3
+dbinom(0:n, size = n, prob = prob)
+plot(0:n, dbinom(0:n, size = n, prob = prob), type = "h")
+norm_x <- seq(from = 0, to = n, length = 1000)
+lines(norm_x, dnorm(norm_x, mean = n*prob, sd = sqrt(n*prob*(1-prob))))
+```
+
+Write a function to make plot for any $n$ and $p$
+
+```{r}
+plot_norm_approx <- function(n, prob) {
+  plot(0:n, dbinom(0:n, size = n, prob = prob), type = "h")
+  norm_x <- seq(from = 0, to = n, length = 1000)
+  lines(norm_x, dnorm(norm_x, mean = n*prob, sd = sqrt(n*prob*(1-prob))))
+}
+```
+
+Test it
+```{r}
+plot_norm_approx(30, 0.95)
+```
+
+```{r}
+plot_norm_approx <- function(n = 30, prob = 0.5) {
+  plot(0:n, dbinom(0:n, size = n, prob = prob), type = "h")
+  norm_x <- seq(from = 0, to = n, length = 1000)
+  lines(norm_x, dnorm(norm_x, mean = n*prob, sd = sqrt(n*prob*(1-prob))))
+}
+```
+
+Test it
+
+```{r}
+plot_norm_approx(40, .7)
+```
+
+```{r}
+plot_norm_approx(p = .3, n = 100)
 ```
 
