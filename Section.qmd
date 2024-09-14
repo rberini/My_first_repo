@@ -167,4 +167,3 @@ plot_norm_approx(40, .7)
 ```{r}
 plot_norm_approx(p = .3, n = 100)
 ```
-
