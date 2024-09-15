@@ -28,3 +28,69 @@ read_fwf("https://www4.stat.ncsu.edu/online/datasets/cigarettes.txt",
 cigarettes_data
 ```
 
+## Manipulating data
+```{r}
+library(readr)
+air_quality <- read_csv("https://www4.stat.ncsu.edu/online/datasets/AirQuality.csv")
+air_quality
+```
+
+```{r}
+View(air_quality)
+```
+
+```{r}
+library(dplyr)
+air_quality |>
+  select(-starts_with("...")) |>
+  rename("co_gt" = `CO(GT)`,
+         "pt_08_sq_co" = `PT08.S1(CO)`,
+         "nmhc_gt" = `NMHC(GT)`,
+         "c6h6_gt" = `C6H6(GT)`,
+         "pt_08_s2_nmhc" = `PT08.S2(NMHC)`,
+         "nox_gt" = `NOx(GT)`,
+         "pt_08_s3_nox" = `PT08.S3(NOx)`,
+         "no2_gt" = `NO2(GT)`,      
+         "pt_08_s4_no2" = `PT08.S4(NO2)`,
+         "pt_08_s5_o3" = `PT08.S5(O3)`
+         ) |>
+  filter(co_gt == -200) |>
+  mutate(mean_co_gt = mean(co_gt, na.rm = T))
+```
+
+
+```{r}
+air_quality |>
+  select(-starts_with("...")) |>
+  rename("co_gt" = `CO(GT)`,
+         "pt_08_sq_co" = `PT08.S1(CO)`,
+         "nmhc_gt" = `NMHC(GT)`,
+         "c6h6_gt" = `C6H6(GT)`,
+         "pt_08_s2_nmhc" = `PT08.S2(NMHC)`,
+         "nox_gt" = `NOx(GT)`,
+         "pt_08_s3_nox" = `PT08.S3(NOx)`,
+         "no2_gt" = `NO2(GT)`,      
+         "pt_08_s4_no2" = `PT08.S4(NO2)`,
+         "pt_08_s5_o3" = `PT08.S5(O3)`
+         ) |>
+  filter(co_gt == -200) |>
+  mutate(across(where(is.numeric), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+```
+```{r}
+air_quality |>
+  select(-starts_with("...")) |>
+  rename("co_gt" = `CO(GT)`,
+         "pt_08_sq_co" = `PT08.S1(CO)`,
+         "nmhc_gt" = `NMHC(GT)`,
+         "c6h6_gt" = `C6H6(GT)`,
+         "pt_08_s2_nmhc" = `PT08.S2(NMHC)`,
+         "nox_gt" = `NOx(GT)`,
+         "pt_08_s3_nox" = `PT08.S3(NOx)`,
+         "no2_gt" = `NO2(GT)`,      
+         "pt_08_s4_no2" = `PT08.S4(NO2)`,
+         "pt_08_s5_o3" = `PT08.S5(O3)`
+         ) |>
+  group_by(Date) |>
+  filter(co_gt == -200) |>
+  mutate(across(where(is.numeric), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+```
