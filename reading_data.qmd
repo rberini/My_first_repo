@@ -29,6 +29,7 @@ cigarettes_data
 ```
 
 ## Manipulating data
+
 ```{r}
 library(readr)
 air_quality <- read_csv("https://www4.stat.ncsu.edu/online/datasets/AirQuality.csv")
@@ -58,7 +59,6 @@ air_quality |>
   mutate(mean_co_gt = mean(co_gt, na.rm = T))
 ```
 
-
 ```{r}
 air_quality |>
   select(-starts_with("...")) |>
@@ -76,6 +76,7 @@ air_quality |>
   filter(co_gt == -200) |>
   mutate(across(where(is.numeric), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
 ```
+
 ```{r}
 air_quality |>
   select(-starts_with("...")) |>
@@ -93,4 +94,40 @@ air_quality |>
   group_by(Date) |>
   filter(co_gt == -200) |>
   mutate(across(where(is.numeric), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+```
+
+## Reading from a Database
+
+```{r}
+library(DBI)
+library(tidyverse)
+library(bigrquery)
+```
+
+```{r}
+con <- dbConnect(
+  bigrquery::bigquery(),
+  project = "bigquery-public-data",
+  dataset = "google_trends",
+  billing = "st-558-berini"
+)
+```
+
+```{r}
+dbListTables(con)
+```
+
+```{r}
+my_data <- tbl(con, "top_terms") |>
+  select(refresh_date, term, rank, dma_id, dma_name) |>
+  rename(
+    "Day" = "refresh_date",
+    "Top_Term" = "term"
+  ) |>
+  filter(rank == 1,
+         Day > lubridate::as_date("2024-05-14"),
+         dma_id == 500
+  ) |>
+  collect()
+my_data
 ```
